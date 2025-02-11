@@ -66,7 +66,7 @@ jobs:
             --outputPDFFilename="website/static/un-transparency-protocol.pdf" \
             --coverTitle="UN Transparency Protocol" \
             --coverImage="https://uncefact.github.io/spec-untp/img/home-hero.jpg" \
-            --puppeteerArgs="--no-sandbox,--disable-setuid-sandbox" \
+            --puppeteerArgs="--no-sandbox,--disable-setuid-sandbox,--disable-http-cache" \
             --cssStyle="body { font-size: 13.33px !important; } h1 { font-size: 40px !important; } h2 { font-size: 26.67px !important; }"
 
       - name: Commit PDF
