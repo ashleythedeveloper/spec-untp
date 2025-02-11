@@ -14,8 +14,8 @@ jobs:
     name: Generates PDF file from docs
     runs-on: ubuntu-latest
     env:
-      # Use an absolute path for Puppeteer's cache directory.
-      PUPPETEER_CACHE_DIR: /home/runner/.cache/puppeteer
+      # Use an absolute path for Puppeteer's download directory.
+      PUPPETEER_DOWNLOAD_PATH: /home/runner/.cache/puppeteer
     permissions:
       contents: "write"
       actions: "read"
@@ -39,22 +39,6 @@ jobs:
         with:
           node-version: 18
           cache: npm
-
-      # Set up a custom directory for global npm installs.
-      - name: Setup custom npm global directory
-        run: |
-          mkdir -p ~/.npm-global
-          npm config set prefix '~/.npm-global'
-          echo "${HOME}/.npm-global/bin" >> $GITHUB_PATH
-
-      # Cache the custom global npm directory.
-      - name: Cache global npm dependencies
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/.npm-global
-          key: ${{ runner.os }}-node-global-v1
-          restore-keys: |
-            ${{ runner.os }}-node-global-
 
       # Cache Puppeteer’s Chromium download.
       - name: Cache Puppeteer Chromium
