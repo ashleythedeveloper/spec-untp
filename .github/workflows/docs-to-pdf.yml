@@ -14,8 +14,8 @@ jobs:
     name: Generates PDF file from docs
     runs-on: ubuntu-latest
     env:
-      # Instruct Puppeteer to download Chromium to a known, cacheable location.
-      PUPPETEER_CACHE_DIR: ~/.cache/puppeteer
+      # Use an absolute path for Puppeteer's cache directory.
+      PUPPETEER_CACHE_DIR: /home/runner/.cache/puppeteer
     permissions:
       contents: "write"
       actions: "read"
@@ -28,7 +28,7 @@ jobs:
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
+          
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -38,7 +38,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          # This caches the npm cache (separate from our custom global installs)
           cache: npm
 
       # Set up a custom directory for global npm installs.
@@ -52,7 +51,7 @@ jobs:
       - name: Cache global npm dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.npm-global
+          path: /home/runner/.npm-global
           key: ${{ runner.os }}-node-global-v1
           restore-keys: |
             ${{ runner.os }}-node-global-
@@ -61,12 +60,12 @@ jobs:
       - name: Cache Puppeteer Chromium
         uses: actions/cache@v3
         with:
-          path: ~/.cache/puppeteer
+          path: /home/runner/.cache/puppeteer
           key: ${{ runner.os }}-puppeteer-chromium-v1
           restore-keys: |
             ${{ runner.os }}-puppeteer-chromium-
 
-      # Install global packages – these now install into ~/.npm-global.
+      # Install global packages.
       - name: Install fs-extra
         run: npm install -g fs-extra
 
@@ -86,7 +85,7 @@ jobs:
             --coverTitle="UN Transparency Protocol" \
             --coverImage="https://uncefact.github.io/spec-untp/img/home-hero.jpg" \
             --puppeteerArgs="--no-sandbox,--disable-setuid-sandbox" \
-            --cssStyle="body { font-size: 11.11px !important; } h1 { font-size: 33.33px !important; } h2 { font-size: 22.22px !important; }"
+            --cssStyle="body { font-size: 13.33px !important; } h1 { font-size: 40px !important; } h2 { font-size: 26.67px !important; }"
 
       - name: Commit PDF
         run: |
