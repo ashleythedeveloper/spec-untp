@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - test
     paths-ignore:
       - "website/static/un-transparency-protocol.pdf"
 
@@ -54,7 +55,7 @@ jobs:
           --contentSelector="article" \
           --paginationSelector="a.pagination-nav__link.pagination-nav__link--next" \
           --excludeSelectors=".breadcrumbs,.theme-edit-this-page" \
-          --excludeURLs="https://uncefact.github.io/spec-untp/docs/about/Meetings,https://uncefact.github.io/spec-untp/docs/about/FAQ" \
+          --excludeURLs="https://uncefact.github.io/spec-untp/docs/about/Meetings,https://uncefact.github.io/spec-untp/docs/about/FAQ,https://uncefact.github.io/spec-untp/docs/implementations/*" \
           --outputPDFFilename="website/static/un-transparency-protocol.pdf" \
           --coverTitle="UN Transparency Protocol" \
           --coverImage="https://uncefact.github.io/spec-untp/img/home-hero.jpg" \
