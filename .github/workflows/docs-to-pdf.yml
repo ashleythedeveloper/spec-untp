@@ -34,35 +34,34 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: yarn
+          cache: npm  # This caches yarn if you’re using it in your repo; it’s unrelated to our global npm cache.
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        run: echo "dir=$(npm config get prefix)" >> $GITHUB_OUTPUT
-  
+      # Set up a custom directory for global npm installs.
+      - name: Setup custom npm global directory
+        run: |
+          mkdir -p ~/.npm-global
+          npm config set prefix '~/.npm-global'
+          echo "${HOME}/.npm-global/bin" >> $GITHUB_PATH
+
+      # Cache the custom global npm directory.
       - name: Cache global npm dependencies
         uses: actions/cache@v3
         with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-global-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.npm-global
+          key: ${{ runner.os }}-node-global-v1
           restore-keys: |
             ${{ runner.os }}-node-global-
 
+      # Install global packages – they’ll now be installed into ~/.npm-global.
       - name: Install fs-extra
-        # Workaround: docs-to-pdf expects fs-extra at runtime,
-        # but the package only includes type definitions.
-        # This step installs fs-extra globally until the package
-        # is updated to include it as a proper dependency.
-        # You can track the progress here: https://github.com/jean-humann/docs-to-pdf/pull/484
         run: npm install -g fs-extra
 
-      - name: Install dependencies
+      - name: Install docs-to-pdf
         run: npm install -g docs-to-pdf
 
       - name: Generate PDF
         run: |
           echo "waiting for two minutes for GitHub pages to be deployed..."
-          # sleep 120 && echo "Done!"
           npx docs-to-pdf --initialDocURLs="https://uncefact.github.io/spec-untp/docs/about/" \
           --excludePaths="/docs/implementations/" \
           --contentSelector="article" \
@@ -73,12 +72,11 @@ jobs:
           --coverTitle="UN Transparency Protocol" \
           --coverImage="https://uncefact.github.io/spec-untp/img/home-hero.jpg" \
           --puppeteerArgs="--no-sandbox,--disable-setuid-sandbox" \
-          --cssStyle="body { font-size: 13.33px !important; } h1 { font-size: 40px !important; } h2 { font-size: 26.67px !important; }"
-
-      - name: commit pdf
+          --cssStyle="body { font-size: 11.11px !important; } h1 { font-size: 33.33px !important; } h2 { font-size: 22.22px !important; }"
+      - name: Commit PDF
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add website/static/un-transparency-protocol.pdf
-          git commit -m "chore: update PDF file"
+          git commit -m "chore: update PDF file" || echo "No changes to commit"
           git push
