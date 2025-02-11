@@ -40,7 +40,7 @@ jobs:
           node-version: 18
           cache: npm
 
-      # Cache Puppeteer’s Chromium download.
+      # Cache Puppeteer’s Chromium download
       - name: Cache Puppeteer Chromium
         uses: actions/cache@v3
         with:
