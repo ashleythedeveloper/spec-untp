@@ -45,9 +45,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /home/runner/.cache/puppeteer
-          key: ${{ runner.os }}-puppeteer-chromium-v2
-          restore-keys: |
-            ${{ runner.os }}-puppeteer-chromium-
+          key: ${{ runner.os }}-puppeteer-chromium-v3
 
       # Install global packages.
       - name: Install fs-extra
